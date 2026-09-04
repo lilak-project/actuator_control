@@ -1,0 +1,38 @@
+/** Formatting for the numeric readouts.  All fixed-width so digits don't jump. */
+
+export const mm = (value: number) => `${value.toFixed(2)}`
+export const mmPerSec = (value: number) => `${value.toFixed(0)}`
+export const percent = (value: number) => `${value.toFixed(0)}`
+
+/** Clamp a user-entered number, returning `fallback` for blank or NaN input. */
+export function toNumber(raw: string, fallback = 0): number {
+  const value = Number(raw)
+  return raw.trim() === "" || Number.isNaN(value) ? fallback : value
+}
+
+/** "Step 3 · 3 cm — 36.23 mm, 2 h ago", for an axis nobody is connected to. */
+export function describeLastPosition(last: {
+  step: number | null
+  name: string
+  position: number
+  at: string
+}): string {
+  const where =
+    last.step === null || last.step < 0
+      ? "between steps"
+      : last.name
+        ? `step ${last.step} · ${last.name}`
+        : `step ${last.step}`
+  return `last left at ${where} — ${last.position.toFixed(2)} mm, ${ago(last.at)}`
+}
+
+function ago(iso: string): string {
+  const seconds = (Date.now() - new Date(iso).getTime()) / 1000
+  if (!Number.isFinite(seconds) || seconds < 0) return "just now"
+  if (seconds < 90) return "just now"
+  const minutes = Math.round(seconds / 60)
+  if (minutes < 60) return `${minutes} min ago`
+  const hours = Math.round(minutes / 60)
+  if (hours < 48) return `${hours} h ago`
+  return `${Math.round(hours / 24)} d ago`
+}

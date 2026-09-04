@@ -1,0 +1,84 @@
+@import "@fontsource-variable/geist-mono";
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  /* A plain white page: the only boxes on it are the ones that mean something. */
+  background: var(--mantine-color-white);
+}
+
+/* Readouts that update several times a second must not reflow as digits change. */
+.tabular {
+  font-family: var(--mantine-font-family-monospace);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Tabs are state-coloured buttons: green when the axis is initialised and the
+   servo is live, grey when it is not, red on a critical alarm, blue for
+   Connect. The tones arrive as custom properties set per tab. */
+.state-tab {
+  background: var(--tt-bg);
+  color: var(--tt-fg);
+  border: 1px solid var(--tt-bd);
+}
+
+.state-tab:hover {
+  background: var(--tt-hover);
+}
+
+/* An icon alone still has to line up with the two-line tabs beside it. */
+.icon-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+}
+
+/* Half-strength, so the name still leads -- and legible on both the tinted and
+   the filled background, which `dimmed` would not be. */
+.tab-state {
+  opacity: 0.75;
+}
+
+/* The page title gives way to the controls beside it rather than pushing them
+   off the screen. */
+.app-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Names are clipped rather than allowed to widen a tab. */
+.tab-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Tabs shed detail as the window narrows: first the state badge and the step
+   line, then the name itself. Breakpoints match Mantine's md and sm, so the
+   fixed header height drops in step with the second line. */
+@media (max-width: 61.99em) {
+  .tab-meta {
+    display: none;
+  }
+}
+
+@media (max-width: 47.99em) {
+  .tab-name {
+    max-width: 9ch;
+  }
+
+  .mantine-Tabs-tab {
+    padding-inline: var(--mantine-spacing-xs);
+  }
+}
+
+@media (max-width: 30em) {
+  .tab-name {
+    max-width: 6ch;
+  }
+}

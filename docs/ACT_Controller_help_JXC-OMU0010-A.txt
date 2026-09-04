@@ -1,0 +1,1188 @@
+                         Doc. no.JXC※-OMU0010-A
+
+
+
+
+        PRODUCT NAME
+
+
+Controller setting Software
+     (ACT Controller)
+         MODEL/ Series
+
+ JXC□1 , LECP , LECA series
+Contents
+
+   1. Safety Instructions                   2
+   2. Product Outline                       4
+   3. Operation explanation                 5
+     3.1 Positioning operation              5
+     3.2 Pushing operation                  7
+   4. Easy mode                             9
+     4.1 Summary of Easy mode               9
+     4.2 Menu                              12
+     4.3 Teaching method                   13
+       4.3.1 Preparation                   13
+       4.3.2 Jog teaching                  13
+       4.3.3 Direct teaching               13
+     4.4 Test drive method                 14
+     4.5 Pitch transfer method             14
+     4.6 Jog transfer method               15
+     4.7 Alarm                             15
+   5. Normal mode                          16
+     5.1 Summary of Normal mode            16
+     5.2 Menu                              19
+     5.3 Window of Normal mode             21
+       5.3.1 Status window                 21
+       5.3.2 Teaching window               23
+       5.3.3 Alarm window                  24
+       5.3.4 Step data window              25
+       5.3.5. Parameter window             26
+       5.3.6 Drive test window             27
+     5.4 Teaching method                   28
+       5.4.1 Preparation                   28
+       5.4.2. Jog teaching                 28
+       5.4.3 Direct teaching               28
+     5.5 Test drive method                 29
+
+
+
+
+                                  -1-
+
+                                        JXC※-OMU0010-A
+                            ACT Controller / Setting software
+                            1. Safety Instructions
+These safety instructions are intended to prevent hazardous situations and/or equipment damage.
+These instructions indicate the level of potential hazard with the labels of "Caution", "Warning" or "Danger".
+They are all important notes for safety and must be followed in addition to International Standards
+(ISO/IEC)*1), and other safety regulations.
+*1) ISO 4414: Pneumatic fluid power -- General rules relating to systems.
+    ISO 4413: Hydraulic fluid power -- General rules relating to systems.
+    IEC 60204-1: Safety of machinery -- Electrical equipment of machines. (Part 1: General requirements)
+    ISO 10218: Manipulating industrial robots -Safety.
+    etc.
+
+                             Caution indicates a hazard with a low level of risk which, if not avoided, could result
+           Caution           in minor or moderate injury.
+                             Warning indicates a hazard with a medium level of risk which, if not avoided, could
+          Warning            result in death or serious injury.
+                             Danger indicates a hazard with a high level of risk which, if not avoided, will
+           Danger            result in death or serious injury.
+
+                                                       Warning
+1. The compatibility of the product is the responsibility of the person who designs the
+   equipment or decides its specifications.
+   Since the product specified here is used under various operating conditions, its compatibility with specific
+   equipment must be decided by the person who designs the equipment or decides its specifications based on
+   necessary analysis and test results.
+   The expected performance and safety assurance of the equipment will be the responsibility of the person
+   who has determined its compatibility with the product.
+   This person should also continuously review all specifications of the product referring to its latest catalog
+   information, with a view to giving due consideration to any possibility of equipment failure when configuring
+   the equipment.
+2. Only personnel with appropriate training should operate machinery and equipment.
+   The product specified here may become unsafe if handled incorrectly.
+   The assembly, operation and maintenance of machines or equipment including our products must be
+   performed by an operator who is appropriately trained and experienced.
+3. Do not service or attempt to remove product and machinery/equipment until safety is
+   confirmed.
+   1. The inspection and maintenance of machinery/equipment should only be performed after measures to
+      prevent falling or runaway of the driven objects have been confirmed.
+   2. When the product is to be removed, confirm that the safety measures as mentioned above are
+      implemented and the power from any appropriate source is cut, and read and understand the specific
+      product precautions of all relevant products carefully.
+   3. Before machinery/equipment is restarted, take measures to prevent unexpected operation and malfunction.
+4. Contact SMC beforehand and take special consideration of safety measures if the product is
+   to be used in any of the following conditions.
+   1. Conditions and environments outside of the given specifications, or use outdoors or in a place exposed to
+      direct sunlight.
+   2. Installation on equipment in conjunction with atomic energy, railways, air navigation, space, shipping,
+      vehicles, military, medical treatment, combustion and recreation, or equipment in contact with food and
+      beverages, emergency stop circuits, clutch and brake circuits in press applications, safety equipment or
+      other applications unsuitable for the standard specifications described in the product catalog.
+   3. An application which could have negative effects on people, property, or animals requiring special safety
+      analysis.
+   4. Use in an interlock circuit, which requires the provision of double interlock for possible failure by using a
+      mechanical protective function, and periodical checks to confirm proper operation.
+
+
+                                                          -2-
+
+                                                                                                     JXC※-OMU0010-A
+                         ACT Controller / Setting software
+                         Safety Instructions
+                                                    Caution
+ 1.The product is provided for use in manufacturing industries.
+   The product herein described is basically provided for peaceful use in manufacturing industries.
+   If considering using the product in other industries, consult SMC beforehand and exchange specifications
+   or a contract if necessary.
+   If anything is unclear, contact your nearest sales branch.
+
+
+Indemnification
+When using the setting software: ACT Controller (hereinafter referred to as "this software"), the
+"indemnification" below will be applied.
+Read and accept them before using the product.
+This agreement comes into effect when the user installs this software to a computer.
+The user cannot install, use or copy this software unless they agree to this agreement.
+
+License Agreement
+ Article 1 (Consent)
+  1. This software is to be used in accordance with this Agreement non-exclusively for the limited purpose of
+     writing data to the controller for SMC electric actuators.
+  2. This software can be installed and saved on a PC for the sole purpose specified in the preceding
+     paragraph.
+ Article 2 (Restrictions)
+  1. This software is not to be copied except as specified in Article 1-2.
+  2. This software license is not to be transferred or lent wholly or in part to a third party, whether for
+      payment or free of charge.
+  3. Modification, translation, adaptation or reverse engineering and recompiling of this software is not
+     permitted.
+ Article 3 (Precautions)
+  1. When using any equipment contained in this Software, please read the "Safety Instructions",
+     "Precautions", "Specific Product Precautions" and "Specifications" described in the manual for the
+     equipment.
+  2. This Software or the equipment contained in it are subject to change without prior notice.
+ Article 4 (Exemption of liability)
+  SMC is not responsible for any damage incurred in the use of this Software.
+ Article 5 (Termination)
+  1. If there is any breach of this Agreement, or when SMC decides to terminate this Agreement, it will be
+      terminated.
+  2. When this Agreement is terminated, please destroy this Software and any copies.
+ Article 6 (Rights of this Software)
+  The copyright and any other rights of this Software are owned by SMC, and protected by Japanese
+  copyright laws and international treaty provisions.
+
+
+
+
+                                                       -3-
+
+                                                                                                 JXC※-OMU0010-A
+2. Product Outline
+This software is a tool to establish the setting for the controller JXC*1*/LECP/LECA for electric actuator LE
+series.
+
+The setting range and setting items vary depending on the operated electric actuator. Check the operation
+manual and technical data of the actuator and controller before setting.
+Refer to SMC web site for the operation manual, technical data, and updates of ACT Controller.
+
+Applicable OS for ACT Controller are followings.
+   Windows® XP (32bit)
+   Windows® 7 (32bit/64bit)
+   Windows® 8 (32bit/64bit)
+   Windows® 8.1 (32bit/64bit)
+   Windows® 10 (32bit/64bit)
+
+Applicable controllers or driver for ACT Controller are followings.
+   JXC*1* series      : JXC Single Axis Step Motor Controller(Servo/24VDC)
+   LECP6 series : Step Motor Controller (Servo/24VDC)
+   LECA6 series : Servo Motor Controller (DC24V)
+   LECPA series : Step Motor Driver (Pulse input type)
+   LECPMJ series : Step Motor Driver (CC-Link Direct Input type )
+
+This software has two types of setting screen, either of which can be selected depending on the purpose.
+
+  <Easy mode>
+    •This is a simplified setting screen mainly for editing the step data.
+    •A test drive can also be performed with the edited data.
+
+  <Normal mode>
+    •This is an advanced setting screen for parameter setting and IO monitoring.
+    •It can check signals, change parameters and save the settings.
+
+The step data can be edited by the both modes. Various operations can be performed by setting the step data.
+The typical operations and settings are as follows.
+
+  <Positioning operation>
+    It is a setting to move to the target position.
+
+  <Pushing operation>
+    It is a setting to hold a work piece. It is mainly for a gripper.
+
+
+
+
+                                                         -4-
+
+                                                                                               JXC※-OMU0010-A
+3. Operation explanation
+3.1 Positioning operation
+In the positioning operation, the electric actuator transfers to and stops at the target position. The following
+image shows the set items and operation. The setting items and values are described below.
+
+                                                                                [A]: Need to be set.
+                                                                                [B]: Need to be adjusted
+                                                                                     as required.
+                                                                                [C]: Not used. Items don't
+                                                                                     need to be changed.
+
+
+
+
+                                                             OFF
+
+
+< [A] Movement MOD>
+   Set “Absolute” for the absolute positioning and “Relative” for the relative positioning.
+
+  Absolute (absolute positioning)
+  It describes how to determine the target position. The position is determined based on the [origin position].
+  An example is shown below.
+
+
+
+
+  In this example, the target position is 100 mm as absolute positioning. The table moves to the position of
+  100 mm regardless wherever the table is.
+
+  Relative (relative positioning)
+  It describes how to determine the target position. The position is determined based on the [current
+  position]. An example is shown below.
+
+
+
+
+  In this example, the moving distance is 30 mm. The table moves 30 mm each from the current position. It
+  does not mean that the target position is 30 mm away from the origin position.
+
+< [A] Speed>
+   Transfer speed to the target position.
+< [A] Position>
+   Target position.
+
+
+                                                       -5-
+
+                                                                                                  JXC※-OMU0010-A
+< [B] Acceleration>
+   The parameter which defines the starting speed to be gradually or rapidly. The higher the value is set, the
+   faster it starts.
+
+< [B] Deceleration>
+   The parameter which defines the stopping speed to be gradually or quickly. The higher the value is set, the
+   quicker it stops.
+
+< [A] Pushing force>
+   Set 0. (If values other than 0 are set, the operation will be changed to the pushing operation.)
+
+< [C] Trigger LV>
+
+< [C] Pushing speed>
+
+< [B] Moving force>
+   The upper force limit up to the pushing operation starting position. The force is automatically adjusted
+   corresponding to the load. (Please do not change)
+
+< [B] Area1, Area2>
+   The condition at which the AREA output signal is turned on.
+
+
+
+
+  The AREA output is a signal to be output when the position enters the specified range. The AREA 1 and
+  AREA 2 in the setting items define this output range.
+
+  The input condition is that the AREA 1 and AREA 2 should be both in the actuator’s operating range, and
+  AREA 1 < AREA 2.
+
+< [B] In position>
+   This is the condition that turns on the [INP] (in position) output signal. When the electric slide table reaches
+   the range of the target position, the [INP] output signal is outputted.
+
+  When the electric slide table enters the range of (in position), the [INP] output signal turns on. When it is
+  necessary to output the arrival signal before the operation is completed, make the value larger.
+
+
+
+
+                                                       -6-
+
+                                                                                                  JXC※-OMU0010-A
+3.2 Pushing operation
+The fingers move to the target position and hold a work piece there with the set thrust force. The figure shows
+setting items and operation. The setting items and values are described below.
+
+
+
+                                                                                   [A]: Need to be set.
+                                                                                   [B]: Need to be adjusted
+                                                                                        as required.
+                                                                                   [C]: Not used. Items don't
+                                                                                        need to be changed.
+
+
+
+
+                                                    OFF
+
+< [A] Movement MOD>
+   Set “Absolute” for the absolute positioning and “Relative” for the relative positioning. Refer to “3.1
+   Positioning operation” for details.
+
+< [A] Speed>
+   Transfer speed to the target position.
+
+< [A] Position>
+   Target position.
+
+< [B] Acceleration>
+   The parameter which defines the starting speed to be gradually or rapidly. The higher the value is set, the
+   faster it starts.
+
+< [B] Deceleration>
+   The parameter which defines the stopping speed to be gradual or quick. The higher the value is set, the
+   quicker it stops.
+
+< [A] Pushing force>
+   Pushing force ratio is defined.
+
+< [A] Trigger LV>
+   The condition at which [INP] output signal is turned on. Set it at the value equivalent to the pushing force or
+   less. The [INP] output signal is given when the target force (Trigger LV) is achieved. The [INP] output signal
+   is turned on when the generated force exceeds the value.
+
+
+
+                                                        -7-
+
+                                                                                                  JXC※-OMU0010-A
+< [A] Pushing speed>
+   The pushing speed. Set the speed in the following range. If the speed is too high, the actuator or work piece
+   can be broken by the impact.
+
+< [B] Moving force>
+   The upper thrust limit up to the pushing operation starting position. (Please do no change)
+
+< [B] Area1, Area2>
+   The condition at which the AREA output signal is turned on.
+
+< [A] In position>
+   The transfer distance (relative value) when pressing. If the transferred distance exceeds the setting, it stops
+   even if it is not pressing. If the transfer distance is exceeded, the INP output signal will not be turned on.
+   (incomplete pushing)
+
+
+
+
+                                                       -8-
+
+                                                                                                 JXC※-OMU0010-A
+4. Easy mode
+4.1 Summary of Easy mode
+The Easy mode window is shown as follows. The connected controller is checked when Easy mode is
+activated. Only the controller to which the connection can be confirmed will upload the parameters and step
+data.
+
+
+
+
+                                    Example of the Easy mode window
+
+
+
+
+                                                  Caution
+ This mode cannot be used unless the communication with the
+ controller is established. Refer to “5.1 Summary of Normal mode” for
+ details of the communication setting.
+
+
+
+
+                                                    -9-
+
+                                                                                             JXC※-OMU0010-A
+(1) Menu
+    It is used for storing the step data and changing the indicating items of step data.
+
+(2) Connected axis indication
+    The controller ID number which is currently communicating and the model name are shown. If multiple
+    axes are connected, the axis for communication can be changed.
+
+(3) Mode switching button
+    It is a button to switch the monitor mode and test mode. Do not click this button while the actuator is
+    activating.
+
+
+                                     Test mode                               Monitor mode
+
+  <Monitor mode>
+    It is a mode to check the controller status. The following can be checked.
+    ･Alarm condition
+    ･Current position
+
+  <Test mode>
+    It is a mode to perform test drive via a PC. In this mode, the servo is turned on compulsorily.
+
+   When the monitor mode is switched to the test mode, the following notice is shown. Note that the
+   controller parallel IO becomes invalid, and servo is turned on (hold status).
+
+
+
+
+   When the test mode is switched to the monitor mode, the following notice is shown. Note that the
+   controller parallel IO becomes valid.
+
+
+
+
+                                                     Caution
+  •Do not touch the actuator in operation.
+  •The controller’s emergency stop (EMG) terminal should be ready to be cut immediately.
+  •The parallel IO input is not accepted during the test mode.
+
+
+
+
+                                                      -10-
+
+                                                                                                JXC※-OMU0010-A
+(4) Function buttons (Return to ORIG, Reset, Servo On/Servo Off)
+    Function buttons for a trial test.
+
+  [Return to ORIG](Valid only in the test mode)
+    Returning to the origin point is performed.
+  [Reset]
+    Alarm is reset. If it is pressed during operation, the operation is terminated (stopped).
+  [Servo On/Servo Off]
+    It switches servo-on (hold) and servo-off (free).
+
+(5) Status
+    It shows the controller status such as a position and speed. The current step no., position, speed and
+    thrust are shown on the upper row. The status of [ALARM], [SVRE], [BUSY], [INP] and [SETON] is shown
+    on the lower row.
+
+     ALARM (alarm)            : It turns to red when alarm occurs.
+     SVRE (servo ready)       : It turns to blue when the servo is turned on.
+     BUSY (busy)              : It turns to blue while the motor is rotating (operating).
+     INP (imposition)         : It turns to blue when the operation completes.
+     SETON (set on)           : Return to the origin position should be completed (blue).
+
+     The alarm window is shown when [ALARM] is clicked.
+
+(6) Step data
+    The step data in the controller is shown. If the step data is changed, the change is sent to the controller.
+
+   Refer to the operation manuals for the controller for details of the set items.
+
+(7) Test drive
+    When this button is clicked after selecting the step data, the specified operation is started.
+
+
+(8) Jog transfer
+    While this button is pressed, the actuator operates at the specified speed. When the button is released,
+    the actuator stops. The right button is for +direction, and the left button is for -direction.
+
+(9) Speed
+    The speed for jog transfer and moving through the specified pitch can be specified. The speed can be
+    changed by dragging the bar.
+
+(10) Distance of the pitch
+    The distance of a pitch to move can be specified.
+
+(11) Pitch transfer
+    The actuator moves through the specified pitch at the specified speed. The actuator moves in +direction
+    with +button and in -direction with -button.
+
+(12) Position loading button
+    The current position is written in the step data when this button is clicked.
+
+
+
+
+                                                       -11-
+
+                                                                                                 JXC※-OMU0010-A
+4.2 Menu
+The following functions can be selected from the menu.
+
+File (F)
+   Open
+      The step data saved in a file is opened. At the same time, the data is written to the controller.
+   Save
+      The step data is saved in the file.
+
+Edit (E)
+  Cut
+      The selected step data is cut.
+  Copy
+      The selected step data is copied on the clip board.
+  Paste
+      The selected step data is pasted.
+  Delete
+      The selected step data is deleted.
+  Undo
+      The step data is restored to the condition before the action.
+
+Comm (C)
+  Comm reset
+    The connected controller is confirmed and step data is loaded again.
+  Comm set
+    The COM port and communication speed are set.
+
+Setting (S)
+  Item setting
+     The items shown in the step data can be set (the following window). The items with tick are shown in
+     the step data.
+
+
+
+
+  Speed restriction
+    The speed of test drive, jog and pitch transfer is restricted.
+
+
+
+
+                                                      -12-
+
+                                                                                                 JXC※-OMU0010-A
+4.3 Teaching method
+Teaching is a method to set a position by operating the actuator.
+Teaching method has “Jog teaching” and “Direct teaching”.
+
+
+
+                                                   Caution
+  The actuator is operated during teaching. Take a safety measure such as keeping a hand off the
+  actuator's moving part during operating the actuator.
+
+4.3.1 Preparation
+ Prepare the following for teaching.
+   (1) Click the mode switching button to be in the test mode.
+   (2) Confirm that the [SVRE] on the controller status window is in blue.
+   (3) If the [SETON] on the controller status window is not in blue, click the [Return to ORIG]. *Returning to
+       the origin point starts.
+
+4.3.2 Jog teaching
+ It is a method to store the current position in the step data by operating the actuator using the setting
+ software.
+   (1) Move the actuator to the target position using the jog button or move button.
+   (2) Select the "position” of the step data to be set.
+   (3) The current position is written in the step data after pressing the [Get Posn] button on the step data
+       window.
+ Jog teaching is done by the above procedure.
+
+4.3.3 Direct teaching
+ It is a method to store the position to which the actuator is moved manually without the motor's driven force
+ (serve off) in the step data.
+   (1) Click the [Servo On] button to be [Servo Off]. The servo is turned off.
+   (2) Move the actuator to the target position manually.
+   (3) Select the "position” of the step data to be set.
+   (4) The current position is written in the step data after pressing the [Get Posn] button.
+
+ Direct teaching is done by the above procedure.
+ After the setting, click the mode switching button to be in the monitor mode. Note that when the mode is
+ switched to the monitor mode, the parallel IO input of the controller becomes valid.
+
+
+
+
+                                                     -13-
+
+                                                                                               JXC※-OMU0010-A
+4.4 Test drive method
+ The test drive starts after selecting the step data (click a field of "No.") and clicking the [Drive] button.
+
+
+
+
+                                          Example of Step Data window
+
+ <Check before test drive>
+   Before the test drive, the mode should be switched to the "Test mode” with the mode switching button.
+   Check that the status is shown as follows.
+
+
+
+
+     ALARM (alarm)            : No alarm should be generated (turned off)
+     SVRE (servo ready)       : Servo should be turned on. (blue)
+     BUSY (busy)              : Not specified.
+     INP (imposition)         : Not specified.
+     SETON (set on)           : Return to the origin position should be completed. (blue)
+
+  If [SETON] (set on) is not blue, “Return to the origin position” after checking [SVRE] is in blue.
+  Click the [Return to ORIG] button to return to the origin position.
+
+4.5 Pitch transfer method
+ The actuator moves through the specified pitch at the specified speed.
+ The actuator moves in +direction with [+] button and in -direction with [-] button.
+
+ <Check before pitch transfer>
+   Before the pitch transfer, the mode should be switched to the "Test mode" with the mode switching button.
+   Check that the status is shown as follows.
+
+
+
+
+     ALARM (alarm)            : No alarm should be generated (turned off)
+     SVRE (servo ready)       : The servo should be turned on (blue)
+     BUSY (busy) :              Not specified.
+     INP (imposition)         : Not specified.
+     SETON (set on)           : Return to the origin position should be completed. (blue)
+
+  If [SETON] (set on) is not blue, “Return to the origin position” after checking [SVRE] is in blue.
+
+                                                        -14-
+
+                                                                                                    JXC※-OMU0010-A
+4.6 Jog transfer method
+ While this button is pressed, the actuator operates at the specified speed. When the button is released, the
+ actuator stops. The right button [->] is for +direction, and the left button [<-] is for -direction.
+
+ <Check before jog transfer>
+   Before the jog transfer, the mode should be switched to the "Test mode” with the mode switching button.
+   Check that the status is shown as follows.
+
+
+
+
+    ALARM (alarm)        : No alarm should be generated (turned off)
+    SVRE (servo ready)   : The servo should be turned on (blue)
+    BUSY (busy) : Not specified.
+    INP (imposition)     : Not specified.
+    SETON (set on)       : Return to the origin position should be completed. (blue)
+
+  If [SETON] (set on) is not in blue, “Return to the origin position” after checking [SVRE] is in blue.
+
+
+4.7 Alarm
+ The currently occurring alarm and the past alarm(s) (up to 16 past alarms) can be seen. The current and
+ past is switched by selecting the tab.
+
+
+
+
+               Currently occurring alarm                                      Past alarm(s)
+
+     Prev     : The previous page (new alarm) is displayed.
+     Next     : The next page (old alarm) is displayed.
+     Exit     : The alarm window is closed.
+
+  •The alarm(s) can be deleted with the [Reset] button. *Some alarms cannot be deleted by this button.
+  •See the controller operation manual for the detail of alarm.
+
+
+
+
+                                                      -15-
+
+                                                                                                 JXC※-OMU0010-A
+5. Normal mode
+5.1 Summary of Normal mode
+The Normal mode window is shown as follows. The connected controller is checked while the Normal mode
+is activated. Only the controller to which the connection can be confirmed will upload the parameters and
+step data. (The step data needs uploading separately.)
+
+
+
+
+                                  Example of the Normal mode window
+
+
+
+
+                                               Caution
+The controller's data cannot be set unless the PC can
+communicate the controller. If the following window is shown,
+the COM port setting may be wrong.
+Select "Action","System"and "Setting” from the menu in order,
+and check the communication setting.
+
+<How to communication setting>
+Maximum axis
+  The maximum ID number for checking the
+  connected equipment is set.
+  (Ex.) 4 The ID numbers 1 to 4 are checked.
+COM port
+  The COM port number of the connected PC is
+  set.
+Communication speed
+  The communication speed for searching when
+  the connection is checked is set. The initial
+  value of the controller is 38400 bps.
+
+
+
+
+                                                  -16-
+
+                                                                                         JXC※-OMU0010-A
+<How to check COM port>
+ Select “Start”, “Control panel” and “System” in order. The “System property” is shown, so select “Hardware”
+ tab, and activate the device manager. If the cable is connected to the PC, “SMC Serial Port (COM*)” is
+ shown at “Ports (COM and LPT)”. A COM port number is shown instead of the *marking. In the Fig. below,
+ the COM port No. is COM3.
+
+
+
+
+(1) Menu
+     It shows each kind of windows and controls files.
+(2) Alarm button
+    The alarm development is indicated by colors. The alarm window is opened when it is clicked.
+       Normal (gray)          : Alarm does not occur.
+       Blue lit up            : Alarm does not occur while the alarm window is shown.
+       Red flashing           : Alarm does occur.
+       Red lit up             : Alarm does not occur while the alarm window is shown.
+(3) Connected axis indication
+    The currently-communicating controller ID number and model name are shown. If multiple axes are
+    connected, the axis for communication can be changed here.
+(4)Test drive
+    This button is used for test drive.
+(5) Function button (Safe Speed, Lock, Test/Monitor Mode)
+    Function buttons for a trial test.
+       Safe Speed             : Speed for the test run is restricted.
+       Lock                   : The rock is released.
+       Test/Monitor Mode      : The test mode and monitor mode is switched.
+                                Do not click this button while the actuator is operating.
+<Monitor mode>
+ It is a mode to check the controller status. The following can be checked.
+     ･Alarm condition
+     ･Current position
+<Test mode>
+ It is a mode to perform test drive via a PC. In this mode, the servo is turned on compulsorily.
+
+
+
+
+                                                   -17-
+
+                                                                                            JXC※-OMU0010-A
+When the monitor mode is switched to the test mode, the following notice is shown. Note that the controller
+parallel IO becomes invalid, and servo is turned on (hold status).
+
+
+
+
+When the test mode is switched to the monitor mode, the following notice is shown. Note that the controller
+parallel IO becomes valid.
+
+
+
+
+                                                  Caution
+Do not touch the actuator in operation.
+The controller’s emergency stop (EMG) terminal should be ready to be cut immediately.
+The parallel IO input is not accepted during the test mode.
+When the "Enable switch" of the basic parameter is set to "1. Enable" and when it moves into the test
+mode, the display shown in the Fig. will be displayed.
+
+
+
+
+(6) Reset
+    The alarm is reset. If it is pressed during operation, the operation is terminated (stopped).
+(7) Editing window
+    The following editing windows are shown. The windows' types are as follows.
+     Status window
+     Teaching window
+     Alarm window
+     Step data window
+     Parameter window
+     Test drive window
+
+
+
+
+                                                     -18-
+
+                                                                                                JXC※-OMU0010-A
+5.2 Menu
+The following operation can be selected from the menu.
+
+<File>
+  Step Data
+     Save        : The step data is saved in a file.
+     Load        : The step data is loaded from the file.
+  Parameter
+     Save        : The parameter is saved in a file.
+     Load        : The parameter is loaded from the file.
+  Alarm
+     Save        : The alarm is saved in a file.
+  Capture
+     Window      : The captured data in the selected window is saved on the clip board.
+  Print
+     Window      : The selected window is printed out.
+
+<View>
+  Status         : It shows the status window.
+  Teaching       : It shows the teaching window.
+  Alarm          : It shows the alarm window.
+  Step Data      : It shows the data window.
+  Parameter      : It shows the parameter window.
+  Drive Test     : It shows the test drive window.
+  Status Bar     : It shows the status bar.
+                   When the status bar becomes valid, the status window and step data window show the
+                   range of values at the bottom left.
+
+
+
+
+                                      Step data window of status bar
+
+
+
+
+                                                    -19-
+
+                                                                                          JXC※-OMU0010-A
+<Action>
+  Step Data
+       Download : The step data is written in the controller.
+       Upload : The step data is loaded from the controller.
+       Go         : Test drive is performed.
+       Stop       : Test drive is stopped.
+       Step Go : The selected step data is operated.
+       Hold       : The actuator is suspended.
+  Teaching
+       Jog        : The mode becomes the jog teaching mode
+       Direct     : The mode becomes the direct teaching mode
+  Parameter
+       Download : The step data is written in the controller.
+       Upload : The step data is loaded from the step data.
+  I/O
+       Enable : The parallel output terminal can be output forcibly.
+                    (The output is commanded with the window.）
+  System
+       Setting : The communication setting window is shown.
+       Reset      : The Normal mode is restarted.
+<Window>
+  Cascade Windows            : The windows are shown in the layer.
+  Tile Horizontally          : The windows are shown side-by-side.
+<Help>
+  Version         : The version is shown.
+  Password        : The password for the manager level is entered.
+  Help            : The help file is activated.
+
+
+
+
+                                                  -20-
+
+                                                                       JXC※-OMU0010-A
+5.3 Window of Normal mode
+ 5.3.1 Status window
+  The controller status and Parallel I/O is displayed.
+
+
+
+
+                                       Example of the Status window
+
+
+
+                                                   Caution
+  When connect JXC*1* series controller, it will be displayed “LECP6” in the Type No. of the status window.
+
+
+
+
+                                                    -21-
+
+                                                                                            JXC※-OMU0010-A
+Controller status
+  Type No.        : The connected controller type is shown.
+  Unit name       : The model name in the parameter is shown.
+  Step No.        : The step data detail is shown.
+  Position        : The current position is shown.
+  Speed           : The current speed is shown.
+  Force           : The torque (thrust) is shown.
+  Target Posn : The target position of transfer is shown.
+
+
+                                                  Caution
+When connect JXC*1* series controller, it will be displayed “LECP6” in the Type No. of the status window.
+
+
+In/Out tab
+   The input and output condition of the parallel IO is shown. The input and output which are turned on are
+   shown in blue.
+
+  E-STOP        : The emergency stop input condition is shown.
+                  It is in blue during emergency stop.
+  SET-ON        : It is blue if 'return to the origin position' is completed.
+  BUSY          : It shows the motor operating condition.
+                   It is in blue while the motor is operating.
+  ALARM         : It shows the alarm condition. It is in red when alarm occurs.
+  SVRE          : It shows the servo-on condition. It is in blue while the servo is turned on.
+  INP           : It shows if the conditions shown below are satisfied for each operation.
+                   It turns into blue when the conditions are satisfied.
+
+     • During SETUP operation
+        The actuator operation stops and the position is within the range of the origin position ± basic
+        parameter “initial positioning range”.
+     • During positioning operation
+        The actuator operation stops and the position is within the range defined in the step data ±
+        “Positioning range”.
+     • During pushing operation
+        The pushing force exceeds the value set in the step data “Trigger LV”
+
+ *Compulsory output (only for the monitor mode)
+  The compulsory output is enabled by clicking the output terminal after selecting "Action","IO"and
+  "Enable” in order from the menu.
+
+
+
+
+                                                   -22-
+
+                                                                                                 JXC※-OMU0010-A
+5.3.2 Teaching window
+ This is a window to support teaching. It is only available in the test mode. The function button can switch
+ the mode to the test mode. Use this window and step data window for jog teaching and direct teaching.
+
+
+
+
+                                    Example of the Teaching window
+
+ Teaching
+   Jog          : It is selected for jog transfer.
+   Direct       : It is selected to turn the servo off (free).
+   Position     : It indicates the current position.
+ Jog Control
+   RTN ORIG       : Return to the origin position.
+   Stop           : The operation is stopped.
+   JOG (<-)       : The actuator moves in -direction while it is pressed.
+   JOG (->)       : The actuator moves in +direction while it is pressed.
+   Move (-)       : The actuator moves the specified pitch in -direction when it is clicked.
+   Move (+)       : The actuator moves the specified pitch in +direction when it is clicked.
+   Move distance : The distance to be moved for pitch transfer is entered.
+   Speed          : The moving speed for jog transfer and pitch transfer is specified.
+
+
+
+
+                                                   -23-
+
+                                                                                               JXC※-OMU0010-A
+5.3.3 Alarm window
+ The currently occurring alarm and the past alarm(s) (up to 16 past alarms) can be seen. The current and
+ past is switched by selecting the tab.
+
+
+
+
+          Currently occurring alarm                                           Past alarm(s)
+
+  Reset    : The alarm(s) can be deleted
+              *Some alarms cannot be deleted by this button.
+               See the controller operation manual for the detail of alarm.
+  Prev     : The previous page (new alarm) is displayed.
+  Next     : The next page (old alarm) is displayed.
+
+
+
+
+                                                  -24-
+
+                                                                                              JXC※-OMU0010-A
+ 5.3.4 Step data window
+  The step data is displayed in this window. And the step data can be edited.
+
+
+
+
+                                    Example of the step data window
+
+
+
+   Copy          : The selected step data is copied on the clip board.
+   Cut           : The selected step data is cut.
+   Paste         : The selected step data is pasted.
+   Clear         : The selected step data is deleted.
+   Undo          : The step data is restored to the condition before the action.
+   Get Posn      : The current position is taken in the selected step data.
+                    *Jog teaching and direct teaching are available by using along with the teaching window.
+   Load          : The step data is loaded from the file.
+   Save          : The step data is saved in a file.
+   Upload        : The step data is loaded from the controller.
+   Download      : The step data is written in the controller.
+
+
+                                                Caution
+When the old version step data is
+read, the display shown in the Fig.
+may be displayed. Check and set the
+step data again. Refer to the
+operation manuals for the controller
+for details of the set items.
+
+
+
+
+                                                   -25-
+
+                                                                                            JXC※-OMU0010-A
+5.3.5 Parameter window
+ The parameters are shown by the type.
+
+
+
+
+ Upload           : The selected (shown) parameters are loaded from the controller.
+ Download         : The selected (shown) parameters are written in the controller.
+ Upload All       : The all parameters are loaded from the controller.
+ Download All     : The all parameters are written to the controller.
+ Load             : The parameters are loaded from the file.
+ Save             : The parameters are saved in a file.
+
+                                                  Caution
+When the old version parameter file is read, the display shown in the Fig. will be displayed.
+Check and set the parameters again.
+Refer to the operation manuals for the controller for details of the set items.
+
+
+
+
+                                                  Caution
+When the parameter file with a problem is read, the display shown in the Fig. will be displayed.
+Create the parameter file again.
+
+
+
+
+                                                    -26-
+
+                                                                                                JXC※-OMU0010-A
+5.3.6 Drive test window
+ It is a simplified programming function for test drive.
+ The commands are [DRIVE] for executing the step data and [WAIT] for specifying the waiting time.
+
+
+
+
+ [Drive Test Data]
+   The commands are shown in the testing order.
+      [DRIVE]     No.* : It shows the step number to be operated.
+      [WAIT]*(msec)    : It shows the waiting time.
+      [JUMP]           : The command is returned to the first line, and operation is repeated.
+
+      Add                   : A new command is added to the last of the test drive list.
+      Delete                : The selected command in the test drive list is deleted.
+      Insert                : A new command is added after the selected command in the test drive list.
+      Edit                  : The selected command in the test drive list is edited.
+      Move Up               : The selected command in the test drive list is moved up by one line.
+      Move Down             : The selected command in the test drive list is moved down by one line.
+      Load                  : A test drive list is loaded from a file.
+      Save                  : A test drive list is saved in a file.
+      RTN ORIG              : Return to the origin position is performed.
+      Select Top            : The first line is selected.
+      Go                    : The test drive list is executed.
+                              The commands are executed in sequential order from the selected command.
+      Stop                  : The executing test drive is stopped.
+
+ <Check before test drive>
+   If the test drive is not ready, [RTN ORIG], [Go] and [Stop] buttons are not shown. If the buttons are not
+   shown, check the following.
+       1. The mode should be switched to "Test mode" with the mode switching button for test drive.
+       2. Check that the [SVRE] of the controller status in the status window is in blue.
+       3. The [SET-ON] of the controller status in the status window is in blue. If it is not blue, “Return to the
+          origin position” is not completed. Return to the origin position. “Return to the origin position” can be
+          done by the [RTN ORIG] button.
+
+
+                                                     -27-
+
+                                                                                                 JXC※-OMU0010-A
+5.4 Teaching method
+Teaching is a method to set a position by operating the actuator.
+Teaching method has “Jog teaching” and “Direct teaching”.
+
+
+                                                   Caution
+The actuator is operated during teaching. Take a safety measure such as keeping a hand off the
+actuator's moving part during operating the actuator.
+
+ 5.4.1 Preparation
+  Prepare the following for teaching.
+   (1) Click the mode switching button to be in the test mode.
+   (2) Wait until the [SVRE] on the controller status window turns to be blue.
+   (3) Confirm that the [SET-ON] on the controller status window is blue. If not, return to the origin position
+       on the teaching window.
+
+
+
+
+                           Example of the controller status window (at the ready)
+
+
+                                                   Caution
+When connect JXC*1* series controller, it will be displayed “LECP6” in the Type No. of the status window.
+
+5.4.2 Jog teaching
+ It is a method to store the current position in the step data by operating the actuator using the setting
+ software.
+   (1) Select the [JOG] button on the teaching window.
+   (2) Move the actuator to the target position by jog operation.
+   (3) Select the “position” of the step data to be set on the step data window.
+   (4) The current position is written in the step data after pressing the [Get Posn] button on the step data
+       window.
+
+5.4.3 Direct teaching
+ It is a method to store the position to which the actuator is moved manually without the motor's driven force
+ (serve off) in the step data.
+   (1) Select the [DIRECT] button on the teaching window.
+   (2) The servo is then turned off, and move the actuator to the target position manually. *The [SVRE] on the
+       status window is turned off when the servo is turned off.
+   (3) Select the "position” of the step data to be set on the step data window.
+   (4) The current position is written in the step data after pressing the [Get Posn] button on the step data
+       window.
+
+
+
+
+                                                     -28-
+
+                                                                                               JXC※-OMU0010-A
+  After the setting, click the mode switching button to be in the monitor mode.
+  Note that when the mode is switched to the monitor mode, the parallel IO input of the controller becomes
+  valid.
+
+
+5.5 Test drive method
+ This function is able to do the test drive of specified single step data.
+
+
+
+
+   Go      : The test drive window for test drive is shown.
+   Step    : The selected step data at the left box is operated.
+   Stop    : Test drive is stopped.
+   Hold    : The actuator is suspended.
+
+ <Check before test drive>
+  The [Step], [Stop] and [Hold] buttons are not shown unless the test drive is ready. If the buttons are not
+  shown, check the following.
+
+   (1) The mode should be switched to "test mode” with the mode switching button for test drive.
+   (2) Check that the [SVRE] of the controller status in the status window is in blue.
+   (3) The [SET-ON] of the controller status in the status window is in blue.
+       If it is not blue, ‘return to the origin position' is not completed. Return to the origin position.
+       “Return to the origin position” can be done by the return to [Return to ORIG] button in the teaching
+       window.
+
+
+
+
+                                                       -29-
+
+                                                                                            JXC※-OMU0010-A
+                                                                                                 Revision history
+                                                                             - : First edition [Oct 2016]
+                                                                             A : Contets revised in sevrral places [Mar 2020]
+
+
+
+
+4-14-1, Sotokanda, Chiyoda-ku, Tokyo 101-0021 JAPAN
+Tel: + 81 3 5207 8249 Fax: +81 3 5298 5362
+URL http://www.smcworld.com
+
+Note: Specifications are subject to change without prior notice and any obligation on the part of the manufacturer.
+© 2016-2020 SMC Corporation All Rights Reserved
+
