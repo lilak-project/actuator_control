@@ -153,6 +153,8 @@ app.include_router(profiles.router)
 app.include_router(profiles.last_router)
 app.include_router(actuators.router)
 app.include_router(status.router)
+from .routers import live as _live  # noqa: E402
+app.include_router(_live.router)
 app.include_router(reference.router)
 app.include_router(report.router)
 app.include_router(legacy.router)
