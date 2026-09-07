@@ -56,15 +56,17 @@ def live() -> dict:
             step_name = get_step_names(ip).get(str(step), "") if step is not None else ""
             items.append({"label": name, "value": "—" if pos is None else f"{float(pos):.1f}", "unit": "mm",
                           "state": "alarm" if alarms else ("running" if busy else "ok"),
-                          "sub": " · ".join(x for x in (f"step {step}" if step is not None else "", step_name, "live") if x)})
+                          "sub": " · ".join(x for x in (f"step {step}" if step is not None else "", step_name) if x)})
         elif entry:
             step = entry.get("step")
             step_name = entry.get("name") or (get_step_names(ip).get(str(step), "") if step is not None else "")
             items.append({"label": name, "value": f"{float(entry.get('position')):.1f}" if entry.get("position") is not None else "—",
                           "unit": "mm", "state": "",
-                          "sub": " · ".join(x for x in (f"step {step}" if step is not None else "", step_name, _when(entry.get("at"))) if x)})
+                          "sub": " · ".join(x for x in (f"step {step}" if step is not None else "", step_name) if x),
+                          "title": f"last recorded {_when(entry.get('at'))}"})
         else:
             items.append({"label": name, "value": "—", "unit": "", "state": "off", "sub": "no record"})
     if not items:
         items.append({"label": "actuators", "value": "0", "unit": "", "state": "off", "sub": "no profiles"})
-    return {"ok": True, "items": items}
+    # One actuator per line on the wall: name | position | step name, all large.
+    return {"ok": True, "items": items, "layout": "rows"}
