@@ -1,6 +1,6 @@
 """GET /api/live -- a few compact numbers for the LILAK portal's live mode.
 
-    {"ok": true, "items": [{"label", "value", "unit", "state", "sub"}]}
+    {"ok": true, "items": [{"label", "note", "value", "unit", "state", "sub"}]}
 
 One tile per saved PROFILE (axis): the live position when the axis is
 connected, otherwise where it was last left (store/last_positions -- recorded
@@ -29,6 +29,32 @@ def _position(snapshot: dict):
     return (snapshot.get("signals") or {}).get("pos")
 
 
+def _ago(iso: str | None) -> str:
+    """How long ago this axis last moved, in words. The absolute time is on the
+    tooltip: what an operator asks at a glance is "is this recent", and "15 min
+    ago" answers it where a timestamp has to be subtracted from now first."""
+    if not iso:
+        return ""
+    try:
+        moved = datetime.fromisoformat(iso)
+    except ValueError:
+        return str(iso)[:16]
+    if moved.tzinfo is None:
+        moved = moved.astimezone()
+    seconds = (datetime.now(moved.tzinfo) - moved).total_seconds()
+    if seconds < 0:
+        return "just now"
+    minutes = seconds / 60
+    if minutes < 1:
+        return "just now"
+    if minutes < 60:
+        return f"{int(minutes)} min ago"
+    hours = minutes / 60
+    if hours < 24:
+        return f"{int(hours)} h ago"
+    return f"{int(hours / 24)} d ago"
+
+
 def _when(iso: str | None) -> str:
     if not iso:
         return ""
@@ -54,16 +80,20 @@ def live() -> dict:
             alarms = snap.get("critical_alarms") or []
             busy = (snap.get("signals") or {}).get("busy")
             step_name = get_step_names(ip).get(str(step), "") if step is not None else ""
-            items.append({"label": name, "value": "—" if pos is None else f"{float(pos):.1f}", "unit": "mm",
+            moved = (entry or {}).get("at")
+            items.append({"label": name, "note": _ago(moved) or "live", "unit": "mm",
+                          "value": "—" if pos is None else f"{float(pos):.1f}",
                           "state": "alarm" if alarms else ("running" if busy else "ok"),
-                          "sub": " ".join(x for x in (f"S{step}" if step is not None else "", step_name) if x)})
+                          "sub": " ".join(x for x in (f"S{step}" if step is not None else "", step_name) if x),
+                          "title": f"last moved {_when(moved)}" if moved else "connected"})
         elif entry:
             step = entry.get("step")
             step_name = entry.get("name") or (get_step_names(ip).get(str(step), "") if step is not None else "")
-            items.append({"label": name, "value": f"{float(entry.get('position')):.1f}" if entry.get("position") is not None else "—",
+            items.append({"label": name, "note": _ago(entry.get("at")),
+                          "value": f"{float(entry.get('position')):.1f}" if entry.get("position") is not None else "—",
                           "unit": "mm", "state": "",
                           "sub": " ".join(x for x in (f"S{step}" if step is not None else "", step_name) if x),
-                          "title": f"last recorded {_when(entry.get('at'))}"})
+                          "title": f"last moved {_when(entry.get('at'))}"})
         else:
             items.append({"label": name, "value": "—", "unit": "", "state": "off", "sub": "no record"})
     if not items:
