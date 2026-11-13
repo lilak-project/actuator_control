@@ -2,7 +2,10 @@ import type {
   ActuatorStatus,
   AlarmReference,
   CommandName,
+  LogResponse,
+  Me,
   Profile,
+  Report,
   StepData,
   StepNames,
   StepPosition,
@@ -60,7 +63,7 @@ export const api = {
 
   /** Fixed-column status of every profile, for the operations log. */
   statusReport: async (): Promise<string> => {
-    const response = await fetch("/api/report.txt")
+    const response = await fetch(url("/api/report.txt"))
     if (!response.ok) {
       throw new ApiError(await readErrorMessage(response), response.status)
     }
@@ -74,6 +77,15 @@ export const api = {
 
   deleteProfile: (ip: string) =>
     request<Profile[]>(`/api/profiles/${encodeURIComponent(ip)}`, { method: "DELETE" }),
+
+  /** Who is looking, and whether they may control. */
+  me: () => request<Me>("/api/me"),
+
+  /** One row per saved actuator, connected or not -- the overview. */
+  report: () => request<Report>("/api/report"),
+
+  /** The tail of the status log, oldest first. */
+  log: (lines = 200) => request<LogResponse>(`/api/log?lines=${lines}`),
 
   listActuators: () => request<ActuatorStatus[]>("/api/actuators"),
 

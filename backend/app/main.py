@@ -11,8 +11,9 @@ import contextlib
 import logging
 from collections.abc import AsyncIterator
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.concurrency import run_in_threadpool
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.responses import Response
@@ -25,6 +26,7 @@ from .config import (
     LOG_INTERVAL,
     STATIC_DIR,
 )
+from . import access, elog
 from .hardware import hub
 from .logbook import logbook
 from .store import snapshot, status_log
@@ -149,6 +151,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.middleware("http")
+async def control_gate(request: Request, call_next):
+    """Monitoring callers may read everything and change nothing (access.py)."""
+    if access.needs_control(request):
+        caller = await run_in_threadpool(access.who, request)
+        if not caller["control"]:
+            return JSONResponse(
+                status_code=403,
+                content={"detail": "Monitoring only: controlling the actuators needs a portal manager or an admin of this service."},
+            )
+    return await call_next(request)
+
+
+@app.get("/api/me", tags=["meta"])
+async def me(request: Request) -> dict:
+    """Who is looking, and whether they may control (the page's mode switch)."""
+    return await run_in_threadpool(access.who, request)
+
+
+app.include_router(elog.router)
 app.include_router(profiles.router)
 app.include_router(profiles.last_router)
 app.include_router(actuators.router)

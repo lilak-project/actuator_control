@@ -113,3 +113,64 @@ export interface StepResponse extends StepData {
 export type CommandName = "setup" | "svon" | "svoff" | "reset" | "hold" | "move"
 
 export type StepNames = Record<string, string>
+
+/**
+ * One row of `/api/report`: a saved actuator, connected or not.
+ *
+ * This is the row that answers "where was it left?" for an axis nobody holds a
+ * session to -- `position_mm` and `step` then come from the control service's
+ * last-position record and `seen_at` says when that reading was taken.
+ */
+export interface ReportRow {
+  name: string
+  ip: string
+  connected: boolean
+  servo_on: boolean | null
+  homed: boolean
+  moving: boolean
+  /** Stop abandoned a move part-way: the axis is between steps. */
+  stopped: boolean
+  step: number | null
+  step_name: string
+  position_mm: number | null
+  alarms: number[]
+  /** When an offline row's reading was taken; null while connected. */
+  seen_at: string | null
+}
+
+export interface Report {
+  at: string
+  actuators: ReportRow[]
+}
+
+/** One line of the control service's status log (JSON Lines on its disk). */
+export interface LogRecord {
+  at: string
+  /** What changed, in the words an operator would use: "move 3", "sv off". */
+  events: string[]
+  actuator: string
+  ip: string
+  connected: boolean
+  servo_on: boolean | null
+  homed: boolean
+  moving: boolean
+  stopped: boolean
+  step: number | null
+  step_name: string
+  position_mm: number | null
+  alarms: number[]
+}
+
+export interface LogResponse {
+  file: string
+  enabled: boolean
+  records: LogRecord[]
+}
+
+/** /api/me: who is looking, and whether they may control. */
+export interface Me {
+  name: string | null
+  control: boolean
+  /** Run without a portal: nobody to ask, so control is allowed. */
+  standalone: boolean
+}

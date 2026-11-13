@@ -1,22 +1,50 @@
-import { useState } from "react"
-import { AppShell, Badge, Button, Container, Group, Stack, Tabs, Text, Title } from "@mantine/core"
-import { Eye, EyeOff, Plug, Settings2 } from "lucide-react"
+import { useCallback, useState } from "react"
+import { Brand, Choice, Screen, Spacer, StateDot, Tabs, ThemeSwitch, type TabItem } from "@neon"
 
 import { ActuatorPanel } from "@/components/actuator-panel"
 import { ConnectPanel } from "@/components/connect-panel"
 import { HelpPanel } from "@/components/help-panel"
+import { HistoryPanel } from "@/components/history-panel"
+import { OverviewPanel } from "@/components/overview-panel"
 import { useAction } from "@/hooks/use-action"
 import { useLastPositions } from "@/hooks/use-last-positions"
+import { usePoll } from "@/hooks/use-poll"
 import { useProfiles } from "@/hooks/use-profiles"
 import { useStatusStream } from "@/hooks/use-status-stream"
 import { useStepNames } from "@/hooks/use-step-names"
 import { api } from "@/lib/api"
 import { gate, stateLabel, stateTone, stepLabel } from "@/lib/gating"
 
-/** The two tabs that are always there, whatever is connected. */
-const CONNECT_TAB = "connect"
+/** The tabs that are always there, whatever is connected. */
+const LIST_TAB = "list"
+const HISTORY_TAB = "history"
 const HELP_TAB = "help"
 
+/** The report is the only live source for the axes nobody is connected to. */
+const REPORT_INTERVAL = 3000
+/** The log only grows when something happens. */
+const LOG_INTERVAL = 10000
+/** A portal role change reaches the page within this. */
+const ME_INTERVAL = 30000
+
+/** Remembered per browser: a controller who chose to just watch stays watching. */
+const MODE_KEY = "actuator.mode"
+type Mode = "control" | "monitor"
+
+function savedMode(): Mode {
+  try {
+    return window.localStorage.getItem(MODE_KEY) === "monitor" ? "monitor" : "control"
+  } catch {
+    return "control"
+  }
+}
+
+/**
+ * One service, two modes. Control drives the axes; monitoring only watches
+ * (what actuator_monitoring used to be). Who may control is the server's call
+ * (/api/me, enforced on every write); anyone who may can also step down to
+ * monitoring, where no button that moves anything is drawn.
+ */
 export default function App() {
   const { actuators, live } = useStatusStream()
   const { profiles, refresh, setProfiles } = useProfiles()
@@ -24,22 +52,36 @@ export default function App() {
   const stepNames = useStepNames(ips)
   const { pending, run } = useAction()
 
-  // Re-read whenever the set of connections changes: disconnecting records a
-  // fresh "last left at" that the Connect tab should pick up immediately.
-  const lastPositions = useLastPositions(ips.join(","))
+  const me = usePoll(useCallback(() => api.me(), []), ME_INTERVAL)
+  const [chosen, setChosen] = useState<Mode>(savedMode)
+  const mayControl = me.data?.control ?? false
+  const mode: Mode = mayControl ? chosen : "monitor"
+  const control = mode === "control"
+  const choose = (next: Mode) => {
+    setChosen(next)
+    try {
+      window.localStorage.setItem(MODE_KEY, next)
+    } catch {
+      /* it just will not be remembered */
+    }
+  }
 
-  // The reading depth is a property of the operator, not of one axis, so it
-  // lives here and every tab follows it.
+  const [logLines, setLogLines] = useState(200)
+  const report = usePoll(useCallback(() => api.report(), []), REPORT_INTERVAL)
+  const log = usePoll(useCallback(() => api.log(logLines), [logLines]), LOG_INTERVAL, String(logLines))
+  // Re-read with every report, so "last left at" follows a move or a disconnect.
+  const lastPositions = useLastPositions(ips.join(",") + (report.data?.at ?? ""))
+
+  // The reading depth is a property of the operator, not of one axis.
   const [richView, setRichView] = useState(false)
   const [requestedTab, setRequestedTab] = useState<string | null>(null)
 
-  // Fall back to the Connect tab whenever the requested axis is gone, so the
+  // Fall back to the list whenever the requested axis is gone, so the
   // selection follows connections without an extra render pass.
   const active =
-    requestedTab &&
-    (requestedTab === CONNECT_TAB || requestedTab === HELP_TAB || ips.includes(requestedTab))
+    requestedTab && ([LIST_TAB, HISTORY_TAB, HELP_TAB].includes(requestedTab) || ips.includes(requestedTab))
       ? requestedTab
-      : (ips[0] ?? CONNECT_TAB)
+      : LIST_TAB
 
   const connect = (ip: string, name: string) =>
     void run(
@@ -59,171 +101,105 @@ export default function App() {
     void run(`disconnect:${ip}`, () => api.disconnect(ip, svOff), `Disconnected ${ip}`)
   }
 
+  const offline = (report.data?.actuators ?? []).filter((row) => !row.connected).length
+
+  const tabs: TabItem[] = [
+    {
+      value: LIST_TAB,
+      label: control ? "Connect" : "Overview",
+      state: `${ips.length} live · ${offline} offline`,
+    },
+    ...actuators.map((status) => ({
+      value: status.ip,
+      label: status.name,
+      // The state, plus where the stage is standing -- which survives SV Off
+      // and still matters.
+      state: [stateLabel(status), stepLabel(status, stepNames.forIp(status.ip))].filter(Boolean).join(" · "),
+      tone: stateTone(status),
+    })),
+    { value: HISTORY_TAB, label: "History" },
+    { value: HELP_TAB, label: "Reference" },
+  ]
+
   return (
-    <AppShell header={{ height: { base: 104, md: 132 } }} padding={0}>
-      {/* The header is fixed, so the tabs stay reachable however far you scroll.
-          No bottom rule: the tabs are coloured blocks and separate themselves. */}
-      <AppShell.Header withBorder={false}>
-        <Container h={64}>
-          <Group h="100%" justify="space-between" wrap="nowrap">
-            <Group gap="md" wrap="nowrap" style={{ minWidth: 0 }}>
-              <Title order={1} fz="h3" fw={600} className="app-title">
-                Actuator Control
-              </Title>
-              <LiveBadge live={live} />
-            </Group>
-
-            <Button
-              variant="default"
-              leftSection={richView ? <EyeOff size={18} /> : <Eye size={18} />}
-              onClick={() => setRichView((current) => !current)}
-            >
-              {richView ? "Minimum" : "Rich"}
-            </Button>
-          </Group>
-        </Container>
-
-        <Container>
-          <Tabs value={active} onChange={setRequestedTab} variant="pills">
-            <Tabs.List>
-              <StateTab
-                value={CONNECT_TAB}
-                active={active === CONNECT_TAB}
-                tone="blue"
-                name="Connect"
-                icon={<Plug size={16} />}
-                state={ips.length > 0 ? `${ips.length} connected` : `${profiles.length} saved`}
-              />
-
-              {actuators.map((status) => (
-                <StateTab
-                  key={status.ip}
-                  value={status.ip}
-                  active={active === status.ip}
-                  tone={stateTone(status)}
-                  name={status.name}
-                  /* The state that used to sit in a badge, plus where the stage
-                     is standing -- which survives SV Off and still matters. */
-                  state={[stateLabel(status), stepLabel(status, stepNames.forIp(status.ip))]
-                    .filter(Boolean)
-                    .join(" · ")}
-                />
-              ))}
-
-              {/* Reference, not an axis: an icon alone, pushed to the far end
-                  so it never competes with the tabs you switch between. */}
-              <Tabs.Tab
-                value={HELP_TAB}
-                className="state-tab icon-tab"
-                aria-label="Reference — homing speed, alarm codes, manuals"
-                style={
-                  {
-                    marginInlineStart: "auto",
-                    "--tt-bg": `var(--mantine-color-gray-${active === HELP_TAB ? 7 : 0})`,
-                    "--tt-fg":
-                      active === HELP_TAB
-                        ? "var(--mantine-color-white)"
-                        : "var(--mantine-color-gray-9)",
-                    "--tt-bd": `var(--mantine-color-gray-${active === HELP_TAB ? 7 : 2})`,
-                    "--tt-hover": `var(--mantine-color-gray-${active === HELP_TAB ? 8 : 1})`,
-                  } as React.CSSProperties
-                }
-              >
-                <Settings2 size={20} />
-              </Tabs.Tab>
-            </Tabs.List>
-          </Tabs>
-        </Container>
-      </AppShell.Header>
-
-      <AppShell.Main>
-        <Container py="xl">
-          {active === HELP_TAB ? (
-            <HelpPanel />
-          ) : active === CONNECT_TAB ? (
-            <ConnectPanel
-              profiles={profiles}
-              connectedIps={ips}
-              lastPositions={lastPositions}
-              onProfilesChanged={setProfiles}
-              onConnect={connect}
-              pending={pending}
+    <Screen
+      top={
+        <>
+          {/* Monitoring is stated, not implied by missing buttons: a screen that
+              looks like the control panel must say when it is not one. */}
+          <Brand name="Actuator" readOnly={!control} />
+          <Tabs items={tabs} value={active} onChange={setRequestedTab} />
+          <Spacer />
+          {/* The socket, not an axis: a page that stopped updating must say so,
+              or a frozen position is read as a still one. */}
+          <StateDot tone={live ? "ok" : "warn"} reserve={["live", "reconnecting · numbers frozen"]}>
+            {live ? "live" : "reconnecting · numbers frozen"}
+          </StateDot>
+          {mayControl ? (
+            <Choice
+              small
+              options={[
+                { value: "control", label: "Control" },
+                { value: "monitor", label: "Monitor" },
+              ]}
+              value={mode}
+              onChange={choose}
             />
-          ) : (
-            actuators
-              .filter((status) => status.ip === active)
-              .map((status) => (
-                <ActuatorPanel
-                  key={status.ip}
-                  status={status}
-                  stepNames={stepNames.forIp(status.ip)}
-                  onStepNamesChange={(names) => stepNames.update(status.ip, names)}
-                  onDisconnect={() => disconnect(status.ip)}
-                  disconnecting={pending === `disconnect:${status.ip}`}
-                  showAll={richView}
-                />
-              ))
-          )}
-        </Container>
-      </AppShell.Main>
-    </AppShell>
-  )
-}
-
-/**
- * One tab: the name on top, the state underneath, tinted by that state.
- *
- * The colour is the point -- from across the room the tab row says which axes
- * are live before any of the words are readable. The second line and the tint
- * are ordinary text and background, not badges, so the tab stays a button.
- */
-function StateTab({
-  value,
-  active,
-  tone,
-  name,
-  state,
-  icon,
-}: {
-  value: string
-  active: boolean
-  tone: "blue" | "teal" | "gray" | "red"
-  name: string
-  state: string
-  icon?: React.ReactNode
-}) {
-  return (
-    <Tabs.Tab
-      value={value}
-      className="state-tab"
-      fz="sm"
-      py={6}
-      leftSection={icon}
-      style={
-        {
-          "--tt-bg": `var(--mantine-color-${tone}-${active ? 7 : 0})`,
-          "--tt-fg": active ? "var(--mantine-color-white)" : `var(--mantine-color-${tone}-9)`,
-          "--tt-bd": `var(--mantine-color-${tone}-${active ? 7 : 2})`,
-          "--tt-hover": `var(--mantine-color-${tone}-${active ? 8 : 1})`,
-        } as React.CSSProperties
+          ) : null}
+          <Choice
+            small
+            options={[
+              { value: "min", label: "Minimum" },
+              { value: "rich", label: "Rich" },
+            ]}
+            value={richView ? "rich" : "min"}
+            onChange={(v) => setRichView(v === "rich")}
+          />
+          <ThemeSwitch />
+        </>
       }
     >
-      <Stack gap={0} align="flex-start">
-        <Text fw={500} className="tab-name">
-          {name}
-        </Text>
-        <Text size="xs" fw={400} className="tab-meta tab-state">
-          {state}
-        </Text>
-      </Stack>
-    </Tabs.Tab>
-  )
-}
-
-function LiveBadge({ live }: { live: boolean }) {
-  return (
-    <Badge size="md" radius="sm" variant="light" color={live ? "teal" : "red"}>
-      {live ? "Live" : "Reconnecting"}
-    </Badge>
+      {active === HELP_TAB ? (
+        <HelpPanel />
+      ) : active === HISTORY_TAB ? (
+        <HistoryPanel
+          log={log.data}
+          error={log.error}
+          loading={log.loading}
+          lines={logLines}
+          onLinesChange={setLogLines}
+          showAll={richView}
+        />
+      ) : active === LIST_TAB ? (
+        control ? (
+          <ConnectPanel
+            profiles={profiles}
+            connectedIps={ips}
+            lastPositions={lastPositions}
+            onProfilesChanged={setProfiles}
+            onConnect={connect}
+            pending={pending}
+          />
+        ) : (
+          <OverviewPanel report={report.data} error={report.error} loading={report.loading} showAll={richView} />
+        )
+      ) : (
+        actuators
+          .filter((status) => status.ip === active)
+          .map((status) => (
+            <ActuatorPanel
+              key={status.ip}
+              status={status}
+              control={control}
+              last={lastPositions[status.ip]}
+              stepNames={stepNames.forIp(status.ip)}
+              onStepNamesChange={(names) => stepNames.update(status.ip, names)}
+              onDisconnect={() => disconnect(status.ip)}
+              disconnecting={pending === `disconnect:${status.ip}`}
+              showAll={richView}
+            />
+          ))
+      )}
+    </Screen>
   )
 }

@@ -1,4 +1,6 @@
-import type { ActuatorStatus } from "./types"
+import type { Tone } from "@neon"
+
+import type { ActuatorStatus, ReportRow } from "./types"
 
 /** Slot 0 is reserved for Init: fixed name, not editable, not deletable. */
 export const ORIGIN_STEP = 0
@@ -76,15 +78,13 @@ export function stateLabel(status: ActuatorStatus): string {
 }
 
 /**
- * The tab's colour, which says at a glance whether the axis can be driven.
- *
- * Green means Init is done and the servo is live; grey means it is not, for
- * either reason; red is a critical alarm. The Connect tab keeps the blue that
- * the Connect button always had.
+ * The tab's colour, which says at a glance whether the axis can be driven:
+ * lit when Init is done and the servo is live, dim when it is not (for either
+ * reason), pink on a critical alarm.
  */
-export function stateTone(status: ActuatorStatus): "teal" | "gray" | "red" {
-  if (status.critical_alarms.length > 0) return "red"
-  return status.setup_done && status.signals.svre ? "teal" : "gray"
+export function stateTone(status: ActuatorStatus): Tone {
+  if (status.critical_alarms.length > 0) return "alarm"
+  return status.setup_done && status.signals.svre ? "ok" : "idle"
 }
 
 /**
@@ -105,4 +105,36 @@ export function stepLabel(
   if (number === ORIGIN_STEP) return `Step ${ORIGIN_STEP} · ${ORIGIN_NAME}`
   const name = stepNames[String(number)]
   return name ? `Step ${number} · ${name}` : `Step ${number}`
+}
+
+/** The same label from a report row or a log record, which carry their own name. */
+export function reportStepLabel(row: Pick<ReportRow, "step" | "step_name" | "stopped">): string | null {
+  if (row.stopped) return "Step -1 · stopped"
+  return describeStep(row.step, row.step_name)
+}
+
+function describeStep(number: number | null, name: string): string | null {
+  if (number === null) return null
+  // -1 is set by Stop: the move was abandoned part-way, so the axis is between
+  // steps and whoever is driving has to choose one again.
+  if (number < 0) return "Step -1 · stopped"
+  if (number === ORIGIN_STEP) return `Step ${ORIGIN_STEP} · ${ORIGIN_NAME}`
+  return name ? `Step ${number} · ${name}` : `Step ${number}`
+}
+
+/** A report row's colour, matching stateTone() for the axes that are connected. */
+export function rowTone(row: ReportRow): Tone {
+  if (row.alarms.length > 0) return "alarm"
+  if (!row.connected) return "idle"
+  return row.homed && row.servo_on ? "ok" : "idle"
+}
+
+/** What a report row is doing, in the same words as stateLabel(). */
+export function rowLabel(row: ReportRow): string {
+  if (!row.connected) return "Offline"
+  if (row.alarms.length > 0) return "Alarm"
+  if (!row.homed) return "Not set up"
+  if (!row.servo_on) return "Servo off"
+  if (row.moving) return "Moving"
+  return "Ready"
 }

@@ -4,6 +4,11 @@ import { defineConfig } from "vite"
 /** Where `npm run dev` should forward /api and /ws. */
 const BACKEND = process.env.VITE_BACKEND_URL ?? "http://127.0.0.1:8080"
 
+/** The DAQ look's parts (neon_ui), source-aliased like lilak_ui. */
+const NEON = new URL("../../neon_ui/src", import.meta.url).pathname
+// neon.css takes its font files from the portal kit.
+const FONTS = new URL("../../lilak_ui/src/fonts", import.meta.url).pathname
+
 export default defineConfig({
   // Relative asset URLs. Behind the portal this app is served under `/p/<name>/`
   // and the proxy injects a `<base href>` -- which only steers RELATIVE urls, so
@@ -12,10 +17,14 @@ export default defineConfig({
   base: "./",
   plugins: [react()],
   resolve: {
-    alias: { "@": new URL("./src", import.meta.url).pathname },
+    alias: { "@neon": NEON, "@": new URL("./src", import.meta.url).pathname },
+    // neon_ui's files would otherwise find React and Mantine in its own
+    // node_modules: a second React breaks every hook.
+    dedupe: ["react", "react-dom", "@mantine/core", "@mantine/hooks", "uplot"],
   },
   server: {
     host: true,
+    fs: { allow: [".", NEON, FONTS] },
     proxy: {
       "/api": { target: BACKEND, changeOrigin: true },
       "/ws": { target: BACKEND, ws: true, changeOrigin: true },
@@ -25,9 +34,8 @@ export default defineConfig({
     // Served by the FastAPI app from backend/../frontend/dist.
     outDir: "dist",
     sourcemap: true,
-    // Recharts is most of the bundle. It is kept in the main chunk on purpose:
-    // the chart is visible immediately and this is served over a local LAN,
-    // where a lazy chunk would only trade ~230 kB gzip for a visible flash.
-    chunkSizeWarningLimit: 900,
+    // Mantine and React are most of the bundle and both are needed on the
+    // first paint; this is served over a local LAN.
+    chunkSizeWarningLimit: 700,
   },
 })

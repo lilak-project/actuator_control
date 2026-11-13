@@ -15,6 +15,7 @@ import {
   TextInput,
 } from "@mantine/core"
 import { ClipboardList, Pencil, Plug, Plus, Trash2 } from "lucide-react"
+import { Panel } from "@neon"
 
 import { notify, useAction } from "@/hooks/use-action"
 import { api } from "@/lib/api"
@@ -108,20 +109,19 @@ export function ConnectPanel({
 
   return (
     <Stack gap="lg">
-      <Paper withBorder p="lg">
-        <Group justify="space-between" align="center" mb="md" wrap="wrap">
-          <Text fw={600} size="lg">
-            Actuators
-          </Text>
+      <Panel
+        title="Actuators"
+        actions={
           <Button
             variant="default"
-            leftSection={<ClipboardList size={18} />}
+            leftSection={<ClipboardList size={16} />}
             loading={localPending === "report"}
             onClick={() => void copyStatus()}
           >
             Copy status
           </Button>
-        </Group>
+        }
+      >
 
         {profiles.length === 0 ? (
           <Text c="dimmed" py="lg">
@@ -133,7 +133,7 @@ export function ConnectPanel({
               const connected = connectedIps.includes(profile.ip)
               const last = lastPositions[profile.ip]
               return (
-                <Paper key={profile.ip} withBorder p="sm" radius="md">
+                <Paper key={profile.ip} withBorder p="sm">
                   <Group justify="space-between" wrap="wrap" gap="sm">
                     <Stack gap={0} style={{ minWidth: 0, flex: "1 1 220px" }}>
                       <Group gap="xs" wrap="nowrap">
@@ -173,7 +173,7 @@ export function ConnectPanel({
                           })
                         }
                       >
-                        <Pencil size={18} />
+                        <Pencil size={16} />
                       </ActionIcon>
                       <Popover
                         opened={confirming === profile.ip}
@@ -195,7 +195,7 @@ export function ConnectPanel({
                               )
                             }
                           >
-                            <Trash2 size={18} />
+                            <Trash2 size={16} />
                           </ActionIcon>
                         </Popover.Target>
                         <Popover.Dropdown p="md">
@@ -214,7 +214,8 @@ export function ConnectPanel({
                       </Popover>
 
                       <Button
-                        leftSection={<Plug size={18} />}
+                        variant="default"
+                        leftSection={<Plug size={16} />}
                         disabled={blocked || connected}
                         loading={pending === `connect:${profile.ip}`}
                         onClick={() => onConnect(profile.ip, profile.name)}
@@ -228,12 +229,9 @@ export function ConnectPanel({
             })}
           </Stack>
         )}
-      </Paper>
+      </Panel>
 
-      <Paper withBorder p="lg">
-        <Text fw={600} size="lg" mb="md">
-          {draft.editing ? `Editing ${draft.editing}` : "New profile"}
-        </Text>
+      <Panel title={draft.editing ? `Editing ${draft.editing}` : "New profile"}>
 
         <Stack gap="md">
           <Group grow align="flex-start">
@@ -262,7 +260,6 @@ export function ConnectPanel({
 
           <Group align="flex-end" gap="md">
             <Switch
-              size="lg"
               mb={8}
               label="Limit position"
               checked={draft.limitEnabled}
@@ -292,18 +289,18 @@ export function ConnectPanel({
             <Button
               variant="subtle"
               color="gray"
-              leftSection={<Plus size={18} />}
+              leftSection={<Plus size={16} />}
               disabled={blocked || !draft.editing}
               onClick={() => setDraft(BLANK)}
             >
               New profile
             </Button>
-            <Button disabled={blocked || !draft.ip.trim()} onClick={() => void save()}>
+            <Button variant="default" disabled={blocked || !draft.ip.trim()} onClick={() => void save()}>
               {draft.editing ? "Save changes" : "Create profile"}
             </Button>
           </Group>
         </Stack>
-      </Paper>
+      </Panel>
 
       {/* Plain http has no clipboard API, so when the copy is refused the text
           is shown instead rather than silently doing nothing. */}
@@ -312,7 +309,6 @@ export function ConnectPanel({
         onClose={() => setReport(null)}
         title="Current status"
         size="xl"
-        radius="lg"
         padding="lg"
       >
         <Text size="sm" c="dimmed" mb="sm">

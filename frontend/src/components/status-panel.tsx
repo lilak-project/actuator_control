@@ -1,18 +1,19 @@
 import type { ReactNode } from "react"
-import { Badge, Box, Button, Divider, Group, Paper, Stack, Text, Tooltip } from "@mantine/core"
+import { Button, Tooltip } from "@mantine/core"
+import { Hold, Panel, Rail, Readout, StateDot, Tag } from "@neon"
 import { Power, PowerOff, Target, Unplug } from "lucide-react"
 
-import { PositionTrack } from "@/components/position-track"
-import { Readout } from "@/components/readout"
 import { SignalList } from "@/components/signal-list"
 import { useAction } from "@/hooks/use-action"
 import { api } from "@/lib/api"
 import { mm, mmPerSec, percent } from "@/lib/format"
-import { stateLabel, stepLabel, type Gate } from "@/lib/gating"
+import { ORIGIN_NAME, ORIGIN_STEP, stateLabel, stateTone, stepLabel, type Gate } from "@/lib/gating"
 import type { ActuatorStatus, StepNames, StepPosition } from "@/lib/types"
 
 interface StatusPanelProps {
   status: ActuatorStatus
+  /** Monitoring leaves the servo keys out. */
+  control: boolean
   gate: Gate
   stepNames: StepNames
   steps: StepPosition[]
@@ -30,6 +31,7 @@ interface StatusPanelProps {
  */
 export function StatusPanel({
   status,
+  control,
   gate,
   stepNames,
   steps,
@@ -41,176 +43,125 @@ export function StatusPanel({
   const parkedAt = stepLabel(status, stepNames)
 
   const track = (
-    <PositionTrack
-      position={status.pos}
-      target={status.target}
-      steps={steps}
+    <Rail
+      value={status.pos}
+      min={0}
       max={trackMax(status, steps)}
+      // Where it has been told to go, while it is not there yet.
+      target={Math.abs(status.target - status.pos) > 0.05 ? status.target : null}
+      // Mode 0 is an unregistered slot, not a place the axis can be sent --
+      // marking all 64 would bury the handful that are real.
+      marks={steps
+        .filter((step) => step.mode !== 0)
+        .map((step) => {
+          const name = step.number === ORIGIN_STEP ? ORIGIN_NAME : step.name
+          return { at: step.position, label: name || undefined, title: `Step ${step.number}${name ? ` · ${name}` : ""} — ${mm(step.position)} mm` }
+        })}
+      label={(v) => `${v.toFixed(0)} mm`}
     />
   )
 
-  const hero = (
-    <Stack gap={2}>
-      {/* Carries the state badges, so they survive the Minimum view where the
-          name/IP header is gone. */}
-      <Group gap="xs" wrap="wrap">
-        <Text fw={600} size="md" c={parkedAt ? undefined : "dimmed"}>
-          {parkedAt ?? "Not driven yet"}
-        </Text>
-        <Badge
-          size="md"
-          radius="sm"
-          variant="light"
-          color={status.critical_alarms.length ? "red" : "gray"}
-        >
-          {stateLabel(status)}
-        </Badge>
-        {status.hold ? (
-          <Badge size="md" radius="sm" variant="light" color="orange">
-            Hold
-          </Badge>
-        ) : null}
-        {status.idle_off ? (
-          <Tooltip
-            label="No command for 5 minutes, so the servo was released. Press SV On to take the axis back."
-            withArrow
-            multiline
-            w={280}
-          >
-            <Badge size="md" radius="sm" variant="light" color="orange">
-              Idle release
-            </Badge>
-          </Tooltip>
-        ) : null}
-      </Group>
-      <Text size="xs" c="dimmed" fw={500}>
-        Current position
-      </Text>
-      <Text
-        className="tabular"
-        fw={600}
-        lh={1}
-        style={{ fontSize: "clamp(2rem, 4vw, 2.75rem)" }}
-      >
-        {mm(status.pos)}
-        <Text span c="dimmed" fw={400} ml="xs" style={{ fontSize: "1.05rem" }}>
-          mm
-        </Text>
-      </Text>
-    </Stack>
-  )
+  const tone = stateTone(status)
 
   return (
-    // Minimum drops the name/IP header, so the readout can sit closer to the
-    // top edge without the card feeling cramped.
-    <Paper withBorder p="lg" pt={showAll ? "lg" : "sm"} shadow="xs">
-      {/* The name and IP are already on the tab; in Minimum they are just
-          another line between the operator and the readout. */}
-      {showAll ? (
-        <Group gap="sm" wrap="wrap" mb="md">
-          <Text fw={600} size="md">
-            {status.name}
-          </Text>
-          <Text className="tabular" c="dimmed" size="sm">
-            {status.ip}
-          </Text>
-        </Group>
-      ) : null}
+    <Panel
+      // The name and IP are already on the tab; Rich says them again for the record.
+      title={
+        <>
+          {showAll ? <>{status.name} <span className="faint tabular">{status.ip}</span></> : "Position"}{" "}
+          {/* Where it is parked is a fact, not a reading (NEON rule 4). */}
+          <Tag label="STEP">{parkedAt ? parkedAt.replace(/^Step /, "") : "not driven yet"}</Tag>
+        </>
+      }
+      actions={
+        <span className="act-badges">
+          <StateDot tone={tone} reserve={["Alarm", "Not set up", "Servo off", "Moving", "Ready"]}>
+            {stateLabel(status)}
+          </StateDot>
+          {status.hold ? <span className="tone-text-warn">▲ Hold</span> : null}
+          {status.idle_off ? (
+            <span className="tone-text-warn" title="No command for 5 minutes, so the servo was released. Press SV On to take the axis back.">
+              ▲ Idle release
+            </span>
+          ) : null}
+        </span>
+      }
+    >
+      <div className="act-stack">
+        <div className="act-hero">
+          <Readout size="hero" label="Position" value={<Hold reserve={["888.88"]}>{mm(status.pos)}</Hold>} unit="mm" />
+          {/* Minimum: the two things you watch while running, side by side. */}
+          {showAll ? (
+            <div className="act-row">
+              <Readout label="Target" value={<Hold reserve={["888.88"]}>{mm(status.target)}</Hold>} unit="mm" />
+              <Readout label="Speed" value={<Hold reserve={["888"]}>{mmPerSec(status.speed)}</Hold>} unit="mm/s" />
+              <Readout label="Force" value={<Hold reserve={["888"]}>{percent(status.force)}</Hold>} unit="%" />
+              <Readout label="Out" value={<Hold reserve={["88"]}>{String(status.out)}</Hold>} />
+            </div>
+          ) : (
+            track
+          )}
+        </div>
+        {showAll ? track : null}
 
-      {showAll ? (
-        <Stack gap="md">
-          <Group justify="space-between" align="flex-end" wrap="wrap" gap="lg">
-            {hero}
-            <Group gap="xl" align="flex-end">
-              <Readout label="Target" value={mm(status.target)} unit="mm" />
-              <Readout label="Speed" value={mmPerSec(status.speed)} unit="mm/s" />
-              <Readout label="Force" value={percent(status.force)} unit="%" />
-              <Readout label="Out" value={String(status.out)} />
-            </Group>
-          </Group>
-          {track}
-        </Stack>
-      ) : (
-        // Minimum: the two things you watch while running, side by side.
-        <Group align="center" wrap="nowrap" gap="xl">
-          {hero}
-          <Box style={{ flex: 1, minWidth: 0 }}>{track}</Box>
-        </Group>
-      )}
-
-      <Box mt="md">
         <SignalList signals={status.signals} showAll={showAll} />
-      </Box>
 
-      {status.alarms.some((alarm) => alarm.code !== 0) ? (
-        <Group gap="lg" mt="sm">
-          {status.alarms
-            .filter((alarm) => alarm.code !== 0)
-            .map((alarm, index) => (
-              <Text key={`${alarm.code}-${index}`} size="sm" c="dimmed">
-                <Text span className="tabular" fw={600} c="red">
-                  {alarm.code}
-                </Text>{" "}
-                {alarm.name}
-              </Text>
-            ))}
-        </Group>
-      ) : null}
+        {status.alarms.some((alarm) => alarm.code !== 0) ? (
+          <div className="act-badges">
+            {status.alarms
+              .filter((alarm) => alarm.code !== 0)
+              .map((alarm, index) => (
+                <span key={`${alarm.code}-${index}`} className="dim">
+                  <b className="tabular tone-text-alarm">{alarm.code}</b> {alarm.name}
+                </span>
+              ))}
+          </div>
+        ) : null}
 
-      <Divider my="md" />
-
-      <Group gap="md" wrap="wrap">
-        <Hint label="Return to origin and establish the coordinate system. Needs a live servo, and leaves it on.">
-          <Button
-            variant="light"
-            leftSection={<Target size={18} />}
-            loading={pending === "init"}
-            disabled={busy || !gate.init}
-            onClick={() =>
-              run("init", () => api.command(status.ip, "setup"), "Init complete — servo on")
-            }
-          >
-            {pending === "init" ? "Homing…" : "Init"}
-          </Button>
-        </Hint>
-        <Hint label="Servo on: energise the motor so the axis holds its position and can be driven.">
-          <Button
-            variant="light"
-            color="teal"
-            leftSection={<Power size={18} />}
-            loading={pending === "svon"}
-            disabled={busy || !gate.svon}
-            onClick={() => run("svon", () => api.command(status.ip, "svon"), "Servo on")}
-          >
-            SV On
-          </Button>
-        </Hint>
-        <Hint label="Servo off: de-energise the motor. The stage stays where it is, but is no longer held and can be pushed by hand.">
-          <Button
-            variant="light"
-            color="gray"
-            leftSection={<PowerOff size={18} />}
-            loading={pending === "svoff"}
-            disabled={busy || !gate.svoff}
-            onClick={() => run("svoff", () => api.command(status.ip, "svoff"), "Servo off")}
-          >
-            SV Off
-          </Button>
-        </Hint>
-        <Hint label="Close the session. Sends SV Off first whenever that is legal, so the axis is never left energised.">
-          <Button
-            variant="light"
-            color="orange"
-            leftSection={<Unplug size={18} />}
-            onClick={onDisconnect}
-            loading={disconnecting}
-            disabled={busy}
-          >
-            Disconnect
-          </Button>
-        </Hint>
-      </Group>
-    </Paper>
+        {control ? (
+        <div className="act-buttons">
+          <Hint label="Return to origin and establish the coordinate system. Needs a live servo, and leaves it on.">
+            <Button
+              variant="default"
+              leftSection={<Target size={16} />}
+              loading={pending === "init"}
+              disabled={busy || !gate.init}
+              onClick={() => run("init", () => api.command(status.ip, "setup"), "Init complete — servo on")}
+            >
+              {pending === "init" ? "Homing…" : "Init"}
+            </Button>
+          </Hint>
+          <Hint label="Servo on: energise the motor so the axis holds its position and can be driven.">
+            <Button
+              variant="default"
+              leftSection={<Power size={16} />}
+              loading={pending === "svon"}
+              disabled={busy || !gate.svon}
+              onClick={() => run("svon", () => api.command(status.ip, "svon"), "Servo on")}
+            >
+              SV On
+            </Button>
+          </Hint>
+          <Hint label="Servo off: de-energise the motor. The stage stays where it is, but is no longer held and can be pushed by hand.">
+            <Button
+              variant="default"
+              leftSection={<PowerOff size={16} />}
+              loading={pending === "svoff"}
+              disabled={busy || !gate.svoff}
+              onClick={() => run("svoff", () => api.command(status.ip, "svoff"), "Servo off")}
+            >
+              SV Off
+            </Button>
+          </Hint>
+          <Hint label="Close the session. Sends SV Off first whenever that is legal, so the axis is never left energised.">
+            <Button variant="default" leftSection={<Unplug size={16} />} onClick={onDisconnect} loading={disconnecting} disabled={busy}>
+              Disconnect
+            </Button>
+          </Hint>
+        </div>
+        ) : null}
+      </div>
+    </Panel>
   )
 }
 

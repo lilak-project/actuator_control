@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
-import { Anchor, Badge, Code, Group, Paper, Stack, Table, Text } from "@mantine/core"
+import { Anchor, Badge, Code, Group, Stack, Table, Text } from "@mantine/core"
+import { Panel } from "@neon"
 import { BookText, ExternalLink, FileText } from "lucide-react"
 
 import { api } from "@/lib/api"
@@ -107,10 +108,7 @@ export function HelpPanel() {
 
   return (
     <Stack gap="lg">
-      <Paper withBorder p="lg">
-        <Text fw={600} size="lg">
-          Init speed
-        </Text>
+      <Panel title="Init speed">
         <Text size="sm" c="dimmed" mt={2} maw={700}>
           Homing speed is the controller parameter <b>ORIG speed</b>. Only the step data object is
           exposed on EtherNet/IP, so nothing in this app — or any EtherNet/IP client — can change
@@ -164,12 +162,9 @@ export function HelpPanel() {
           origin is lost whenever the controller's 24 V is cut. It survives SV Off, a disconnect and
           a server restart, so once a day is enough.
         </Text>
-      </Paper>
+      </Panel>
 
-      <Paper withBorder p="lg">
-        <Text fw={600} size="lg">
-          Alarm codes
-        </Text>
+      <Panel title="Alarm codes">
         <Text size="sm" c="dimmed" mt={2} maw={700}>
           The controller reports up to four at once; they appear under the position readout. Groups
           B and C clear with Stop, D drops the servo so SV On follows, and E cannot be cleared at
@@ -218,12 +213,9 @@ export function HelpPanel() {
             </Table.Tbody>
           </Table>
         </Table.ScrollContainer>
-      </Paper>
+      </Panel>
 
-      <Paper withBorder p="lg">
-        <Text fw={600} size="lg">
-          Status files
-        </Text>
+      <Panel title="Status files">
         <Text size="sm" c="dimmed" mt={2} maw={700}>
           Two of them, and the difference matters: <Code>backend/data/status.json</Code> is the
           present tense — the current state of every profile, overwritten whenever it changes and
@@ -280,12 +272,9 @@ export function HelpPanel() {
           <Code>ACTUATOR_STATUS_LOG</Code> and <Code>ACTUATOR_STATUS_SNAPSHOT</Code> move either
           file, or switch it off when set to nothing.
         </Text>
-      </Paper>
+      </Panel>
 
-      <Paper withBorder p="lg">
-        <Text fw={600} size="lg" mb="md">
-          Manuals
-        </Text>
+      <Panel title="Manuals">
         <Stack gap="sm">
           {MANUALS.map(([title, href, detail]) => (
             <Group key={href} align="flex-start" gap="sm" wrap="nowrap">
@@ -327,7 +316,7 @@ export function HelpPanel() {
             </Text>
           </Group>
         </Stack>
-      </Paper>
+      </Panel>
     </Stack>
   )
 }

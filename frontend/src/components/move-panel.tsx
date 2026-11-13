@@ -6,7 +6,6 @@ import {
   Group,
   Input,
   NumberInput,
-  Paper,
   Popover,
   SimpleGrid,
   Stack,
@@ -25,6 +24,7 @@ import {
   Save,
   Trash2,
 } from "lucide-react"
+import { Panel } from "@neon"
 
 import { useAction } from "@/hooks/use-action"
 import { api } from "@/lib/api"
@@ -37,7 +37,7 @@ const STEP_MAX = 63
 const FIRST_USER_STEP = 1
 
 /** Square, and as tall as a size-md input, so the row reads as one control. */
-const STEP_ARROW = 42
+const STEP_ARROW = 36
 
 interface FieldSpec {
   key: keyof StepData
@@ -267,14 +267,13 @@ export function MovePanel({
     setForm((current) => ({ ...current, [key]: Number(value) || 0 }))
 
   return (
-    <Paper withBorder p="lg" shadow="xs">
+    <Panel title="Steps">
       <Stack gap="md">
         <Group align="flex-start" gap="md" wrap="wrap">
           {/* Full-height arrows instead of the stacked spinner: stepping
               through the table is the common case, and a 42 px target is one
               you can hit without looking. */}
           <Input.Wrapper
-            size="md"
             // "(6)" is how many steps are stored, not the highest number.
             label={`Step (${registered.length})${isNew && !isOrigin ? " · new" : ""}`}
           >
@@ -283,15 +282,14 @@ export function MovePanel({
                 variant="default"
                 w={STEP_ARROW}
                 h={STEP_ARROW}
-                radius="md"
+                
                 aria-label="Previous step"
                 disabled={busy || stepNumber <= ORIGIN_STEP}
                 onClick={() => selectStep(stepNumber - 1)}
               >
-                <ChevronLeft size={22} />
+                <ChevronLeft size={18} />
               </ActionIcon>
               <NumberInput
-                size="md"
                 w={86}
                 min={ORIGIN_STEP}
                 max={selectorMax}
@@ -311,18 +309,17 @@ export function MovePanel({
                 variant="default"
                 w={STEP_ARROW}
                 h={STEP_ARROW}
-                radius="md"
+                
                 aria-label="Next step"
                 disabled={busy || stepNumber >= selectorMax}
                 onClick={() => selectStep(stepNumber + 1)}
               >
-                <ChevronRight size={22} />
+                <ChevronRight size={18} />
               </ActionIcon>
             </Group>
           </Input.Wrapper>
           <TextInput
             label="Name"
-            size="md"
             // Capped: without a card around it the field would otherwise run
             // the full width of the page.
             style={{ flex: "1 1 200px", maxWidth: 380 }}
@@ -334,7 +331,6 @@ export function MovePanel({
           />
           <NumberInput
             label="Position"
-            size="md"
             w={190}
             min={0}
             max={posMax}
@@ -365,7 +361,7 @@ export function MovePanel({
           >
             <Button
               color="red"
-              leftSection={<OctagonX size={18} />}
+              leftSection={<OctagonX size={16} />}
               loading={pending === "stop"}
               disabled={busy || !gate.stop}
               onClick={stop}
@@ -375,7 +371,7 @@ export function MovePanel({
           </Tooltip>
           <Button
             variant="default"
-            leftSection={<Save size={18} />}
+            leftSection={<Save size={16} />}
             loading={pending === "save"}
             disabled={busy || !gate.editStep || !changed || isOrigin}
             onClick={save}
@@ -395,7 +391,7 @@ export function MovePanel({
                 // Only colour it while it can actually be pressed: a red label
                 // on a greyed-out button reads as available.
                 c={deleteBlocked ? undefined : "red"}
-                leftSection={<Trash2 size={18} />}
+                leftSection={<Trash2 size={16} />}
                 loading={pending === "delete"}
                 disabled={deleteBlocked}
                 onClick={() => setConfirmingDelete((open) => !open)}
@@ -426,7 +422,7 @@ export function MovePanel({
         <Stack gap="xs">
           <UnstyledButton onClick={() => setAdvancedOpen((open) => !open)}>
             <Group gap={6}>
-              {advancedOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+              {advancedOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
               <Text size="sm" fw={500} c="dimmed">
                 Advanced — mode, speed, acceleration, AREA window
               </Text>
@@ -436,7 +432,6 @@ export function MovePanel({
           <Collapse expanded={advancedOpen}>
             <Stack gap="md" pt="xs">
               <Switch
-                size="md"
                 checked={fullEdit}
                 disabled={busy}
                 onChange={(event) => setFullEdit(event.currentTarget.checked)}
@@ -466,7 +461,7 @@ export function MovePanel({
           </Collapse>
         </Stack>
       </Stack>
-    </Paper>
+    </Panel>
   )
 }
 
@@ -482,7 +477,7 @@ function MoveButton({
   onClick: () => void
 }) {
   const button = (
-    <Button leftSection={<Play size={20} />} loading={loading} disabled={disabled} onClick={onClick}>
+    <Button variant="default" leftSection={<Play size={16} />} loading={loading} disabled={disabled} onClick={onClick}>
       Move
     </Button>
   )

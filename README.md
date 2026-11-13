@@ -9,8 +9,27 @@ limit that blocks moves when a stored step would run the axis too far.
 
 ```
 backend/    FastAPI service + the JXC91 driver
-frontend/   React UI (Mantine + Recharts)
+frontend/   React UI (Mantine, drawn in NEON: ../neon_ui)
 ```
+
+## Control and monitoring
+
+One service, two modes (actuator_monitoring was folded in here). **Monitor**
+shows every saved actuator, where each axis is or was last left, its stored
+steps, and the movement history; nothing on it moves an axis. **Control** adds
+Connect, Init, servo and moves.
+
+Under the portal, control is for a portal manager or an admin of this service
+(a portal grant with admin ticked, to the person or a group); everyone else the
+portal lets in gets monitoring. The server enforces it -- every request that is
+not a read answers 403 for a monitoring caller (`backend/app/access.py`,
+checked by `backend/tools/check_access.py`). Someone who may control can still
+switch to Monitor at the top. Run on its own, with no portal, everything is
+allowed, as before.
+
+The elog endpoint (`POST /api/elog`) moved here too, under the same name and
+fields actuator_monitoring registered, so its log formats keep filling; elog
+needs Discover run once against this service's URL.
 
 ## Running it
 
@@ -311,8 +330,8 @@ backend/
       snapshot.py         status.json, atomic overwrite
 
 frontend/src/
-  App.tsx                 fixed header, tabs, layout
-  theme.ts                Mantine theme: type scale, control sizes, measure
+  App.tsx                 NEON screen: top bar, tabs, layout
+  index.css               actuator's own layout on NEON's tokens
   components/             status panel, move panel, controls, connect + help panels
   hooks/                  status stream, position history, profiles, actions
   lib/                    API client, types, gating rules, formatting
